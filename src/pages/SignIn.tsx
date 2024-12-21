@@ -1,15 +1,43 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 const SignIn = () => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!email || !password) return;
+    // console.log({ email, password });
+
+    // if (password.length < 6) {
+    //   alert("password must be at least 6 characters");
+    //   return;
+    // }
+    // console.log({ email, password });
+
+    if (password.length < 6) {
+      setError("password must be at least 6 characters");
+      return;
+    }
+    console.log({ email, password });
+  };
+
   return (
     <>
       {/* second step */}
       <div className="flex items-center justify-center h-screen px-2">
         {/* first step */}
-        <div className="flex flex-col space-y-4 w-full max-w-[400px]  bg-gray-300 p-4 rounded-lg">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col space-y-4 w-full max-w-[400px]  bg-gray-300 p-4 rounded-lg"
+        >
           <h3 className="text-center text-2xl font-bold mb-4">Sign In</h3>
           <div className="grid w-full max-w-sm items-center gap-1.5">
             <Label htmlFor="email">Email</Label>
@@ -18,6 +46,8 @@ const SignIn = () => {
               id="email"
               placeholder="Email"
               className="bg-background"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
           </div>
           <div className="grid w-full max-w-sm items-center gap-1.5">
@@ -27,9 +57,14 @@ const SignIn = () => {
               id="password"
               placeholder="Password"
               className="bg-background"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <Button>Sign in</Button>
+          <Button type="submit" disabled={!email || !password}>
+            Sign in
+          </Button>
+          {error && <p className="text-red-600"> {error} </p>}
           <div>
             <p>
               Don't have an account?
@@ -38,7 +73,7 @@ const SignIn = () => {
               </Link>
             </p>
           </div>
-        </div>
+        </form>
       </div>
     </>
   );
