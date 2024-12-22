@@ -1,10 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useContext, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { authContext } from "@/stores/authContext";
 
 const SignIn = () => {
+  const navigate = useNavigate();
+  const { users, setUsers } = useContext(authContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -14,19 +17,25 @@ const SignIn = () => {
     setError("");
 
     if (!email || !password) return;
-    // console.log({ email, password });
-
-    // if (password.length < 6) {
-    //   alert("password must be at least 6 characters");
-    //   return;
-    // }
-    // console.log({ email, password });
+    console.log({ email, password });
 
     if (password.length < 6) {
       setError("password must be at least 6 characters");
       return;
     }
-    console.log({ email, password });
+
+    const isUserExist = users.find((user) => user.email === email);
+    if (!isUserExist) {
+      setError("User Not found");
+      return;
+    }
+    if (isUserExist.password! == password) {
+      setError("Password is incoorect");
+    }
+
+    // save useinfo in local storage
+    localStorage.setItem("user", JSON.stringify(isUserExist));
+    navigate("/");
   };
 
   return (
